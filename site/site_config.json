@@ -1,0 +1,8 @@
+{
+	"port": 3000,
+	"service": {
+		"url": "localhost",
+		"port": 3030
+	}
+
+}
