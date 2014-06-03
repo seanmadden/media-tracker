@@ -1,0 +1,11 @@
+{
+	"name": "media-tracker",
+	"version": "0.0.1",
+	"private": true,
+	"dependencies": {
+		"express": "3.x",
+		"oauth": "~0.9.10",
+		"passport": "~0.1.17",
+		"mongoose": "~3.8.3"
+	}
+}
