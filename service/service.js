@@ -4,6 +4,7 @@
 
 var express = require("express"),
 	config = require("./service_config.json"),
+	Movie = require("./models/movie.js"),
 	app = express();
 
 app.listen(config.port, function() {
