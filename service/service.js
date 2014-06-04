@@ -5,17 +5,48 @@
 var express = require("express"),
 	config = require("./service_config.json"),
 	Movie = require("./models/movie.js"),
-	app = express();
+	bodyParser = require("body-parser"),
+	mongoose = require("mongoose"),
+	app = express(),
+	router = express.Router();
+
+app.use(bodyParser());
+
+mongoose.connect('mongodb://localhost/test');
+
+router.use(function(req, res, next) {
+	console.log("Incoming request");
+	next(); //allow the routing to continue
+});
+
+router.route("/movies")
+	.post(function(req, res) {
+		var movie = new Movie();
+		movie.title = req.body.title;
+
+		movie.save(function(err) {
+			if (err) {
+				res.send(err);
+				return;
+			}
+
+			res.json(
+				{
+					message: 'Movie created!',
+					movie: movie
+				}
+			);
+		});
+	});
+
+router.get("/", function(req, res) {
+	//TODO: provide a list of valid REST endpoints
+	res.json({ message: 'Movie service API' })
+});
+
+app.use("/api", router);
 
 app.listen(config.port, function() {
 	console.log("Service listening on port", config.port);
 });
 
-app.get("/", function(req, res) {
-	//TODO: provide a list of valid REST endpoints
-	res.send("listeners...");
-});
-
-app.get("event", function (req, res) {
-	console.log("handling some event here");
-});
