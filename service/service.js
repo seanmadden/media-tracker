@@ -20,6 +20,16 @@ router.use(function(req, res, next) {
 });
 
 router.route("/movies")
+	.get(function(req, res) {
+		Movie.find(function(err, Movies) {
+			if (err) {
+				res.send(err);
+				return;
+			}
+
+			res.json(Movies);
+		});
+	})
 	.post(function(req, res) {
 		var movie = new Movie();
 		movie.title = req.body.title;
