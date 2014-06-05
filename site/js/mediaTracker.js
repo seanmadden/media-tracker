@@ -2,12 +2,12 @@
  * Created by smmadden on 6/4/14.
  */
 
-angular.module('mediaTracker', ['ngRoute'])
+angular.module('mediaTracker', ['ngRoute', 'movieResources'])
 	.config(['$routeProvider',
 		function($routeProvider) {
 			$routeProvider.when('/',
 				{
-					templateUrl: 'index.html'
+					templateUrl: 'default.html'
 				}
 			).when('/movies',
 				{
@@ -17,4 +17,8 @@ angular.module('mediaTracker', ['ngRoute'])
 			)
 		}
 	]
+)
+	.controller('movieController', function movieController($scope, Movie) {
+		$scope.movies = Movie.query();
+	}
 );
