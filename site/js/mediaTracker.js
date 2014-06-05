@@ -20,5 +20,10 @@ angular.module('mediaTracker', ['ngRoute', 'movieResources'])
 )
 	.controller('movieController', function movieController($scope, Movie) {
 		$scope.movies = Movie.query();
+
+		$scope.addMovie = function() {
+			console.log("movieTitle is", $scope.movieTitle);
+			Movie.add({ title: $scope.movieTitle });
+		}
 	}
 );
