@@ -19,6 +19,9 @@
                 </h3>
             </div>
             <div class="panel-body">
+                <div class="alert alert-danger" ng-show="isNullTitleError">
+                    You must supply a movie title!
+                </div>
                 <form class="form-horizontal" role="form">
                     <div class="form-group">
                         <label for="movieTitle" class="col-sm-2 control-label">Title</label>

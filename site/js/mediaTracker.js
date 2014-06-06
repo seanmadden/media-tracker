@@ -20,11 +20,16 @@ angular.module('mediaTracker', ['ngRoute', 'movieResources'])
 )
 	.controller('movieController', function movieController($scope, Movie) {
 		$scope.isSaving = false;
+		$scope.isNullTitleError = false;
 		$scope.movies = Movie.query();
 
 		$scope.addMovie = function() {
-			if ($scope.movieTitle === "")
+			if (typeof $scope.movieTitle === "undefined" ||
+					   $scope.movieTitle === null ||
+					   $scope.movieTitle === "") {
+				$scope.isNullTitleError = true;
 				return;
+			}
 
 			$scope.isSaving = true;
 			Movie.add({ title: $scope.movieTitle }, function() {
