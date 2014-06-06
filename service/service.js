@@ -60,16 +60,18 @@ router.route("/movies/:movieId")
 				return;
 			}
 
-			if (req.body.title)
+			if (req.body.title !== undefined)
 				movie.title = req.body.title;
-			if (req.body.watched)
+			if (req.body.watched !== undefined)
 				movie.watched = req.body.watched;
 				if (movie.watched === true)
 					movie.watchedDate = new Date();
 
 			movie.save(function(err) {
-				if (err)
+				if (err) {
 					res.send(err);
+					return;
+				}
 
 				res.json("Movie Updated");
 			});
