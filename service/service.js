@@ -17,6 +17,7 @@ mongoose.connect('mongodb://localhost/test');
 router.use(function(req, res, next) {
 	res.header("Access-Control-Allow-Origin", "*");
 	res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
+	res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
 	console.log("Incoming request");
 	next(); //allow the routing to continue
 });
