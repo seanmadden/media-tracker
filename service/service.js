@@ -2,13 +2,13 @@
  * Created by smmadden on 6/2/14.
  */
 
-var express = require("express"),
-	config = require("./service_config.json"),
-	Movie = require("./models/movie.js"),
-	bodyParser = require("body-parser"),
-	mongoose = require("mongoose"),
-	app = express(),
-	router = express.Router();
+var express = require("express");
+var	config = require("./service_config.json");
+var	Movie = require("./models/movie.js");
+var mongoose = require("mongoose");
+var	bodyParser = require("body-parser");
+var	app = express();
+var	router = express.Router();
 
 app.use(bodyParser());
 
@@ -48,6 +48,30 @@ router.route("/movies")
 					movie: movie
 				}
 			);
+		});
+	});
+
+router.route("/movies/:movieId")
+	.put(function(req, res) {
+		Movie.findById(req.params.movieId, function(err, movie) {
+			if (err) {
+				req.send(err);
+				return;
+			}
+
+			if (req.body.title)
+				movie.title = req.body.title;
+			if (req.body.watched)
+				movie.watched = req.body.watched;
+				if (movie.watched === true)
+					movie.watchedDate = new Date();
+
+			movie.save(function(err) {
+				if (err)
+					res.send(err);
+
+				res.json("Movie Updated");
+			});
 		});
 	});
 
