@@ -2,7 +2,12 @@
     <div class="col-md-6">
         <ul class="list-group">
             <li class="list-group-item" ng-repeat="movie in movies">
-                {{movie.title}}
+                <div class="checkbox">
+                    <label>
+                       <input type="checkbox" id="{{movie._id}}-watched" ng-model="movie.watched" ng-change="updateMovie(movie._id, movie.watched)"/>
+                        {{movie._id}} - {{movie.title}}
+                    </label>
+                </div>
             </li>
         </ul>
     </div>

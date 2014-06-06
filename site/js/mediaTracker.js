@@ -24,6 +24,11 @@ angular.module('mediaTracker', ['ngRoute', 'movieResources'])
 		$scope.addMovie = function() {
 			console.log("movieTitle is", $scope.movieTitle);
 			Movie.add({ title: $scope.movieTitle });
-		}
+		};
+
+		$scope.updateMovie = function(movieId, watched) {
+			console.log("Updating movie:", movieId);
+			Movie.update({ movieId: movieId, watched: watched });
+		};
 	}
 );
