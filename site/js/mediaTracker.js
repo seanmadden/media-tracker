@@ -22,6 +22,7 @@ angular.module('mediaTracker', ['ngRoute', 'movieResources'])
         $scope.isSaving = false;
         $scope.isNullTitleError = false;
         $scope.movies = Movie.query();
+		console.log($scope.movies);
 
         $scope.addMovie = function() {
             if (typeof $scope.movieTitle === "undefined" ||
@@ -32,8 +33,11 @@ angular.module('mediaTracker', ['ngRoute', 'movieResources'])
             }
 
             $scope.isSaving = true;
-            Movie.add({ title: $scope.movieTitle }, function() {
+            Movie.add({ title: $scope.movieTitle }, function(data) {
+	            console.log(data);
                 $scope.isSaving = false;
+	            if (typeof data.movie !== "undefined")
+					$scope.movies.push(data.movie);
             });
             $scope.movieTitle = "";
         };
