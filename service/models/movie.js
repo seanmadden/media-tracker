@@ -3,12 +3,12 @@
  */
 
 var mongoose = require('mongoose'),
-	Schema = mongoose.Schema;
+    Schema = mongoose.Schema;
 
 var MovieSchema = new Schema({
-	title: { type: String, required: true },
-	watched: { type: Boolean, default: false},
-	watchedDate: Date
+    title: { type: String, required: true },
+    watched: { type: Boolean, default: false},
+    watchedDate: Date
 });
 
 //var Movie = mongoose.model('Movie', MovieSchema);

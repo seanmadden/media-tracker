@@ -15,79 +15,79 @@ app.use(bodyParser());
 mongoose.connect('mongodb://localhost/test');
 
 router.use(function(req, res, next) {
-	res.header("Access-Control-Allow-Origin", "*");
-	res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
-	res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-	console.log("Incoming request");
-	next(); //allow the routing to continue
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    console.log("Incoming request");
+    next(); //allow the routing to continue
 });
 
 router.route("/movies")
-	.get(function(req, res) {
-		Movie.find()
-			.sort('title')
-			.exec(function(err, Movies) {
-				if (err) {
-					res.send(err);
-					return;
-				}
+    .get(function(req, res) {
+        Movie.find()
+            .sort('title')
+            .exec(function(err, Movies) {
+                if (err) {
+                    res.send(err);
+                    return;
+                }
 
-				res.json(Movies);
-			});
-	})
-	.post(function(req, res) {
-		var movie = new Movie();
-		movie.title = req.body.title;
+                res.json(Movies);
+            });
+    })
+    .post(function(req, res) {
+        var movie = new Movie();
+        movie.title = req.body.title;
 
-		movie.save(function(err) {
-			if (err) {
-				res.send(err);
-				return;
-			}
+        movie.save(function(err) {
+            if (err) {
+                res.send(err);
+                return;
+            }
 
-			res.json(
-				{
-					message: 'Movie created!',
-					movie: movie
-				}
-			);
-		});
-	});
+            res.json(
+                {
+                    message: 'Movie created!',
+                    movie: movie
+                }
+            );
+        });
+    });
 
 router.route("/movies/:movieId")
-	.put(function(req, res) {
-		Movie.findById(req.params.movieId, function(err, movie) {
-			if (err) {
-				req.send(err);
-				return;
-			}
+    .put(function(req, res) {
+        Movie.findById(req.params.movieId, function(err, movie) {
+            if (err) {
+                req.send(err);
+                return;
+            }
 
-			if (req.body.title !== undefined)
-				movie.title = req.body.title;
-			if (req.body.watched !== undefined)
-				movie.watched = req.body.watched;
-				if (movie.watched === true)
-					movie.watchedDate = new Date();
+            if (req.body.title !== undefined)
+                movie.title = req.body.title;
+            if (req.body.watched !== undefined)
+                movie.watched = req.body.watched;
+                if (movie.watched === true)
+                    movie.watchedDate = new Date();
 
-			movie.save(function(err) {
-				if (err) {
-					res.send(err);
-					return;
-				}
+            movie.save(function(err) {
+                if (err) {
+                    res.send(err);
+                    return;
+                }
 
-				res.json("Movie Updated");
-			});
-		});
-	});
+                res.json("Movie Updated");
+            });
+        });
+    });
 
 router.get("/", function(req, res) {
-	//TODO: provide a list of valid REST endpoints
-	res.json({ message: 'Movie service API' })
+    //TODO: provide a list of valid REST endpoints
+    res.json({ message: 'Movie service API' })
 });
 
 app.use("/api", router);
 
 app.listen(config.port, function() {
-	console.log("Service listening on port", config.port);
+    console.log("Service listening on port", config.port);
 });
 
