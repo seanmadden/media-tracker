@@ -58,7 +58,7 @@ router.route("/movies/:movieId")
     .put(function(req, res) {
         Movie.findById(req.params.movieId, function(err, movie) {
             if (err) {
-                req.send(err);
+                res.send(err);
                 return;
             }
 
@@ -78,7 +78,18 @@ router.route("/movies/:movieId")
                 res.json("Movie Updated");
             });
         });
-    });
+    })
+	.delete(function(req, res) {
+		Movie.findById(req.params.movieId, function(err, movie) {
+			if (err) {
+				res.send(err);
+				return;
+			}
+
+			movie.remove();
+			res.json("Movie Deleted!");
+		})
+	});
 
 router.get("/", function(req, res) {
     //TODO: provide a list of valid REST endpoints
