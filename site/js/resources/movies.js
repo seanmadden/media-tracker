@@ -8,6 +8,7 @@ angular.module('movieResources', ['ngResource'])
             return $resource('http://localhost:3030/api/movies/:movieId', {}, {
                 query: { method: 'GET', isArray: true },
                 add: { method: 'POST' },
-                update: { method: 'PUT', params: {movieId: '@movieId'} }
+                update: { method: 'PUT', params: {movieId: '@movieId'}},
+                delete: { method: 'DELETE', params: {movieId: '@movieId'}}
             });
     }]);

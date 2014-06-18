@@ -46,5 +46,14 @@ angular.module('mediaTracker', ['ngRoute', 'movieResources'])
             console.log("Updating movie:", movieId);
             Movie.update({ movieId: movieId, watched: watched });
         };
+
+        $scope.deleteMovie = function(movieId) {
+            Movie.delete({ movieId: movieId });
+            $.each($scope.movies, function(key, value) {
+                if (value._id == movieId) {
+                    delete $scope.movies[key];
+                }
+            });
+        }
     }
 );
