@@ -12,7 +12,7 @@ var router = express.Router();
 
 app.use(bodyParser());
 
-mongoose.connect('mongodb://localhost/test');
+mongoose.connect('mongodb://localhost/' + config.databaseName);
 
 router.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
