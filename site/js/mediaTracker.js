@@ -47,12 +47,12 @@ angular.module('mediaTracker', ['ngRoute', 'movieResources'])
             Movie.update({ movieId: movieId, watched: watched });
         };
 
-        $scope.deleteMovie = function(index) {
-            movieToDelete = $scope.movies[index];
-            Movie.delete({ movieId: movieToDelete._id });
+        $scope.deleteMovie = function(movie) {
+            Movie.delete({ movieId: movie._id });
             $.each($scope.movies, function(key, value) {
-                if (value._id == movieToDelete._id) {
-                    $scope.movies.splice(index, 1);
+                if (value._id == movie._id) {
+                    //array splice
+                    $scope.movies.splice($scope.movies.indexOf(movie), 1);
                 }
             });
         }
