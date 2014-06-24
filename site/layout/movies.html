@@ -35,7 +35,7 @@
                     <input type="checkbox" id="{{movie._id}}-watched" ng-model="movie.watched" ng-change="updateMovie(movie._id, movie.watched)"/>
                     {{movie.title}}
                 </label>
-                <button type="button" class="btn btn-danger btn-xs pull-right" ng-click="deleteMovie(movie._id)"><span class="glyphicon glyphicon-remove"></span> Delete</button>
+                <button type="button" class="btn btn-danger btn-xs pull-right" ng-click="deleteMovie($index)"><span class="glyphicon glyphicon-remove"></span> Delete</button>
             </div>
         </div>
     </div>
