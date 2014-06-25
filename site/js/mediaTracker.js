@@ -51,7 +51,6 @@ angular.module('mediaTracker', ['ngRoute', 'movieResources'])
             Movie.delete({ movieId: movie._id });
             $.each($scope.movies, function(key, value) {
                 if (value._id == movie._id) {
-                    //array splice
                     $scope.movies.splice($scope.movies.indexOf(movie), 1);
                 }
             });
