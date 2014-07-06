@@ -10,16 +10,17 @@ angular.module('mediaTracker', ['ngRoute', 'movieResources', 'listResources'])
                     controller: 'manageController',
                     templateUrl: 'default.html'
                 }
-            ).when('/movies',
+            ).when('/lists/:listName',
                 {
-                    controller: 'movieController',
-                    templateUrl: 'movies.html'
+                    controller: 'listController',
+                    templateUrl: 'list.html'
                 }
             )
         }
     ]
 )
-    .controller('movieController', function movieController($scope, Movie) {
+    .controller('listController', function listController($scope, $routeParams, Movie, List) {
+        $scope.list = List.find({listName: $routeParams.listName});
         $scope.isSaving = false;
         $scope.isNullTitleError = false;
         $scope.movies = Movie.query();

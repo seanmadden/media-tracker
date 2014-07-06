@@ -30,11 +30,8 @@
     </div>
 
     <ul class="nav nav-pills nav-stacked col-md-4">
-        <li>
-            <a href="#movies">Movies</a>
-        </li>
-        <li>
-            <a href="">Add List</a>
+        <li ng-repeat="list in lists">
+            <a href="#/lists/{{list.title}}">{{list.title}}</a>
         </li>
     </ul>
 </div>

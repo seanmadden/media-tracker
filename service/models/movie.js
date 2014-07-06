@@ -8,7 +8,8 @@ var mongoose = require('mongoose'),
 var MovieSchema = new Schema({
     title: { type: String, required: true },
     watched: { type: Boolean, default: false},
-    watchedDate: Date
+    watchedDate: Date,
+    parentList: { type: String, required: true }
 });
 
 //var Movie = mongoose.model('Movie', MovieSchema);

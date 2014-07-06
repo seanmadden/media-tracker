@@ -10,10 +10,19 @@ var mongoose = require("mongoose");
 var bodyParser = require("body-parser");
 var app = express();
 var router = express.Router();
+var MovieList;
+
+List.findOne({ title: 'Movies' }).exec(function(err, list) {
+    MovieList = list;
+});
 
 app.use(bodyParser());
 
-mongoose.connect('mongodb://localhost/' + config.databaseName);
+mongoose.connect('mongodb://localhost/' + config.databaseName, function(err) {
+    if (err) {
+        console.error("Trouble connecting to database. Is mongodb running?")
+    }
+});
 
 //set headers to allow CORS - this is run before any other routing
 router.use(function(req, res, next) {
@@ -38,6 +47,7 @@ router.route("/movies")
     })
     .post(function(req, res) {
         var movie = new Movie();
+        movie.parentList = MovieList._id;
         movie.title = req.body.title;
 
         movie.save(function(err) {
@@ -126,6 +136,21 @@ router.route("/lists")
     })
 
 ;
+
+router.route("/lists/:listName")
+    .get(function(req, res) {
+        console.log("GET");
+        List.findOne({title: req.params.listName})
+            .exec(function(err, list) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                res.json(list);
+            }
+        );
+    }
+);
 
 router.get("/", function(req, res) {
     //TODO: provide a list of valid REST endpoints
