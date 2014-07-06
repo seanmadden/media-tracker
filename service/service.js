@@ -5,6 +5,7 @@
 var express = require("express");
 var config = require("./service_config.json");
 var Movie = require("./models/movie.js");
+var List = require("./models/list.js")
 var mongoose = require("mongoose");
 var bodyParser = require("body-parser");
 var app = express();
@@ -14,11 +15,11 @@ app.use(bodyParser());
 
 mongoose.connect('mongodb://localhost/' + config.databaseName);
 
+//set headers to allow CORS - this is run before any other routing
 router.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-    console.log("Incoming request");
     next(); //allow the routing to continue
 });
 
@@ -90,6 +91,41 @@ router.route("/movies/:movieId")
 			res.json("Movie Deleted!");
 		})
 	});
+
+router.route("/lists")
+    .get(function(req, res) {
+        List.find()
+            .exec(function (err, Lists) {
+                if (err) {
+                    res.send(err);
+                    return;
+                }
+
+                res.json(Lists);
+            }
+        )
+    })
+    .post(function(req, res) {
+        var list = new List();
+
+        list.title= req.body.title;
+
+        list.save(function(err) {
+            if (err) {
+                res.send(err);
+                return;
+            }
+
+            res.json(
+                {
+                    message: 'List Created',
+                    list: list
+                }
+            )
+        });
+    })
+
+;
 
 router.get("/", function(req, res) {
     //TODO: provide a list of valid REST endpoints

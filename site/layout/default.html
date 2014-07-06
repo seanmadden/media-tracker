@@ -1,7 +1,40 @@
 <div class="row">
+    <div class="col-md-6 pull-right">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    Add List
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div class="alert alert-danger" ng-show="isNullTitleError">
+                    You must supply a List title!
+                </div>
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label for="listTitle" class="col-sm-2 control-label">Title</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="listTitle" id="listTitle" class="form-control" ng-model="listTitle" placeholder="Title"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button class="btn btn-default" ng-click="addList()" ng-disabled="isSaving">
+                                <span class="glyphicon glyphicon-plus"> Add</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <ul class="nav nav-pills nav-stacked col-md-4">
         <li>
             <a href="#movies">Movies</a>
+        </li>
+        <li>
+            <a href="">Add List</a>
         </li>
     </ul>
 </div>

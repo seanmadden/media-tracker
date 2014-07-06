@@ -2,11 +2,12 @@
  * Created by smmadden on 6/4/14.
  */
 
-angular.module('mediaTracker', ['ngRoute', 'movieResources'])
+angular.module('mediaTracker', ['ngRoute', 'movieResources', 'listResources'])
     .config(['$routeProvider',
         function($routeProvider) {
             $routeProvider.when('/',
                 {
+                    controller: 'manageController',
                     templateUrl: 'default.html'
                 }
             ).when('/movies',
@@ -55,5 +56,29 @@ angular.module('mediaTracker', ['ngRoute', 'movieResources'])
                 }
             });
         }
-    }
-);
+    })
+    .controller('manageController', function manageController($scope, List) {
+        $scope.isSaving = false;
+        $scope.isNullTitleError = false;
+        $scope.lists = List.query();
+        console.log($scope.lists);
+
+        $scope.addList = function() {
+            if (typeof $scope.listTitle === "undefined" ||
+                $scope.listTitle === null ||
+                $scope.listTitle === "") {
+                $scope.isNullTitleError = true;
+                return;
+            }
+
+            $scope.isSaving = true;
+                List.add({ title: $scope.listTitle }, function(data) {
+                    console.log(data);
+                    $scope.isSaving = false;
+                    if (typeof data.movie !== "undefined")
+                        $scope.lists.push(data.list);
+                });
+            $scope.listTitle = "";
+        }
+    })
+;
