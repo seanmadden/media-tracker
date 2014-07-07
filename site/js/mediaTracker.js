@@ -2,7 +2,7 @@
  * Created by smmadden on 6/4/14.
  */
 
-angular.module('mediaTracker', ['ngRoute', 'movieResources', 'listResources'])
+angular.module('mediaTracker', ['ngRoute', 'listItemResources', 'listResources'])
     .config(['$routeProvider',
         function($routeProvider) {
             $routeProvider.when('/',
@@ -10,7 +10,7 @@ angular.module('mediaTracker', ['ngRoute', 'movieResources', 'listResources'])
                     controller: 'manageController',
                     templateUrl: 'default.html'
                 }
-            ).when('/lists/:listName',
+            ).when('/:listName',
                 {
                     controller: 'listController',
                     templateUrl: 'list.html'
@@ -19,41 +19,41 @@ angular.module('mediaTracker', ['ngRoute', 'movieResources', 'listResources'])
         }
     ]
 )
-    .controller('listController', function listController($scope, $routeParams, Movie, List) {
-        $scope.list = List.find({listName: $routeParams.listName});
+    .controller('listController', function listController($scope, $routeParams, ListItem) {
+        $scope.listName = $routeParams.listName;
         $scope.isSaving = false;
         $scope.isNullTitleError = false;
-        $scope.movies = Movie.query();
-		console.log($scope.movies);
+        $scope.listItems = ListItem.query({listName: $scope.listName });
+		console.log($scope.listItems);
 
-        $scope.addMovie = function() {
-            if (typeof $scope.movieTitle === "undefined" ||
-                       $scope.movieTitle === null ||
-                       $scope.movieTitle === "") {
+        $scope.addListItem = function() {
+            if (typeof $scope.listItemTitle === "undefined" ||
+                       $scope.listItemTitle === null ||
+                       $scope.listItemTitle === "") {
                 $scope.isNullTitleError = true;
                 return;
             }
 
             $scope.isSaving = true;
-            Movie.add({ title: $scope.movieTitle }, function(data) {
+            ListItem.add({ listName: $scope.listName, title: $scope.listItemTitle }, function(data) {
 	            console.log(data);
                 $scope.isSaving = false;
-	            if (typeof data.movie !== "undefined")
-					$scope.movies.push(data.movie);
+	            if (typeof data.listItem !== "undefined")
+					$scope.listItems.push(data.listItem);
             });
-            $scope.movieTitle = "";
+            $scope.listItemTitle = "";
         };
 
         $scope.updateMovie = function(movieId, watched) {
             console.log("Updating movie:", movieId);
-            Movie.update({ movieId: movieId, watched: watched });
+            ListItem.update({ listName: $scope.listName, movieId: movieId, watched: watched });
         };
 
         $scope.deleteMovie = function(movie) {
-            Movie.delete({ movieId: movie._id });
-            $.each($scope.movies, function(key, value) {
+            ListItem.delete({ listName: $scope.listName, movieId: movie._id });
+            $.each($scope.listItems, function(key, value) {
                 if (value._id == movie._id) {
-                    $scope.movies.splice($scope.movies.indexOf(movie), 1);
+                    $scope.listItems.splice($scope.listItems.indexOf(movie), 1);
                 }
             });
         }
