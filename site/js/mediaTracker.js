@@ -82,4 +82,7 @@ angular.module('mediaTracker', ['ngRoute', 'listItemResources', 'listResources']
             $scope.listTitle = "";
         }
     })
+    .controller('headerController', function headerController($scope, List) {
+        $scope.lists = List.query();
+    })
 ;

@@ -29,7 +29,6 @@ router.use(function(req, res, next) {
 
 router.param('list', function(req, res, next, title) {
     List.findOne({ title_lower: title.toLowerCase() }).exec(function(err, list) {
-        console.log(list);
         req.List = list;
         next();
     });
@@ -68,24 +67,7 @@ router.route("/lists")
                 }
             )
         });
-    })
-
-;
-
-router.route("/lists/:listName")
-    .get(function(req, res) {
-        console.log("GET");
-        List.findOne({title: req.params.listName})
-            .exec(function(err, list) {
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-                res.json(list);
-            }
-        );
-    }
-);
+    });
 
 router.route("/:list")
     .get(function(req, res) {
