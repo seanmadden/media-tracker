@@ -4,17 +4,12 @@
 
 var express = require("express");
 var config = require("./service_config.json");
-var Movie = require("./models/movie.js");
+var ListItem = require("./models/listItem.js");
 var List = require("./models/list.js")
 var mongoose = require("mongoose");
 var bodyParser = require("body-parser");
 var app = express();
 var router = express.Router();
-var MovieList;
-
-List.findOne({ title: 'Movies' }).exec(function(err, list) {
-    MovieList = list;
-});
 
 app.use(bodyParser());
 
@@ -32,76 +27,15 @@ router.use(function(req, res, next) {
     next(); //allow the routing to continue
 });
 
-router.route("/movies")
-    .get(function(req, res) {
-        Movie.find()
-            .sort('title')
-            .exec(function(err, Movies) {
-                if (err) {
-                    res.send(err);
-                    return;
-                }
-
-                res.json(Movies);
-            });
-    })
-    .post(function(req, res) {
-        var movie = new Movie();
-        movie.parentList = MovieList._id;
-        movie.title = req.body.title;
-
-        movie.save(function(err) {
-            if (err) {
-                res.send(err);
-                return;
-            }
-
-            res.json(
-                {
-                    message: 'Movie created!',
-                    movie: movie
-                }
-            );
-        });
+router.param('list', function(req, res, next, title) {
+    List.findOne({ title_lower: title.toLowerCase() }).exec(function(err, list) {
+        console.log(list);
+        req.List = list;
+        next();
     });
+});
 
-router.route("/movies/:movieId")
-    .put(function(req, res) {
-        Movie.findById(req.params.movieId, function(err, movie) {
-            if (err) {
-                res.send(err);
-                return;
-            }
-
-            if (req.body.title !== undefined)
-                movie.title = req.body.title;
-            if (req.body.watched !== undefined)
-                movie.watched = req.body.watched;
-                if (movie.watched === true)
-                    movie.watchedDate = new Date();
-
-            movie.save(function(err) {
-                if (err) {
-                    res.send(err);
-                    return;
-                }
-
-                res.json("Movie Updated");
-            });
-        });
-    })
-	.delete(function(req, res) {
-		Movie.findById(req.params.movieId, function(err, movie) {
-			if (err) {
-				res.send(err);
-				return;
-			}
-
-			movie.remove();
-			res.json("Movie Deleted!");
-		})
-	});
-
+//Match the routes from most specific to least specific
 router.route("/lists")
     .get(function(req, res) {
         List.find()
@@ -119,6 +53,7 @@ router.route("/lists")
         var list = new List();
 
         list.title= req.body.title;
+        list.title_lower = req.body.title.toLowerCase();
 
         list.save(function(err) {
             if (err) {
@@ -152,9 +87,80 @@ router.route("/lists/:listName")
     }
 );
 
+router.route("/:list")
+    .get(function(req, res) {
+        ListItem.find({ parentList: req.List._id })
+            .sort('title')
+            .exec(function(err, ListItems) {
+                if (err) {
+                    res.send(err);
+                    return;
+                }
+
+                res.json(ListItems);
+            });
+    })
+    .post(function(req, res) {
+        var listItem = new ListItem();
+        listItem.parentList = req.List._id;
+        listItem.title = req.body.title;
+        listItem.title_lower = req.body.title.toLowerCase();
+
+        listItem.save(function(err) {
+            if (err) {
+                res.send(err);
+                return;
+            }
+
+            res.json(
+                {
+                    message: 'ListItem created!',
+                    listItem: listItem
+                }
+            );
+        });
+    });
+
+router.route("/:list/:listItemId")
+    .put(function(req, res) {
+        ListItem.findById(req.params.listItemId, function(err, movie) {
+            if (err) {
+                res.send(err);
+                return;
+            }
+
+            if (req.body.title !== undefined)
+                movie.title = req.body.title;
+            if (req.body.watched !== undefined)
+                movie.watched = req.body.watched;
+            if (movie.watched === true)
+                movie.watchedDate = new Date();
+
+            movie.save(function(err) {
+                if (err) {
+                    res.send(err);
+                    return;
+                }
+
+                res.json("ListItem Updated");
+            });
+        });
+    })
+    .delete(function(req, res) {
+        ListItem.findById(req.params.movieId, function(err, movie) {
+            if (err) {
+                res.send(err);
+                return;
+            }
+
+            movie.remove();
+            res.json("ListItem Deleted!");
+        })
+    });
+
 router.get("/", function(req, res) {
     //TODO: provide a list of valid REST endpoints
-    res.json({ message: 'Movie service API' })
+    res.json({ message: 'ListItem service API' })
 });
 
 app.use("/api", router);

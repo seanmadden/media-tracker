@@ -6,7 +6,7 @@ var movies = express.Router();
 
 movies.route("/movies")
 	.post(function(req, res) {
-		var movie = new Movie();
+		var movie = new ListItem();
 		movie.title = req.body.title;
 
 		movie.save(function(err) {
@@ -17,7 +17,7 @@ movies.route("/movies")
 
 			res.json(
 				{
-					message: 'Movie created!',
+					message: 'ListItem created!',
 					movie: movie
 				}
 			);
