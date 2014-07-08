@@ -151,3 +151,4 @@ app.listen(config.port, function() {
     console.log("Service listening on port", config.port);
 });
 
+module.exports = app;
