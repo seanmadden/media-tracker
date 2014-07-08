@@ -5,3 +5,6 @@ The goal of this is to track movies that I want to see and movies I have seen. A
 It will have a REST interface for interacting with the model, and maybe at some point I'll write an android app. Before that happens, I'll make sure the site also looks good on mobile devices.
 
 Finally, I'd like to add imdb or some other movie DB interaction to get artwork/synopsis/etc.
+
+
+UPDATE: the project has already changed scope. It is now configured to track lists of almost anything. See wiki for a roadmap.
