@@ -24,4 +24,11 @@ describe('GET lists', function() {
             })
             .expect(200, done);
     });
+
+    it('responds with json', function(done) {
+        request(app)
+            .get('/api/testList')
+            .expect('Content-Type', /json/)
+            .expect(200, done);
+    });
 });
