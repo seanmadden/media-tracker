@@ -101,6 +101,17 @@ router.route("/:list")
                 }
             );
         });
+    })
+    .delete(function(req, res) {
+        List.findById(req.List._id, function(err, list) {
+            if (err) {
+                res.send(err);
+                return;
+            }
+
+            list.remove();
+            res.json("ListItem Deleted!");
+        })
     });
 
 router.route("/:list/:listItemId")

@@ -31,4 +31,11 @@ describe('GET lists', function() {
             .expect('Content-Type', /json/)
             .expect(200, done);
     });
+
+    it('responds with json (delete list)', function(done) {
+    request(app)
+        .delete('/api/testList')
+        .expect('Content-Type', /json/)
+        .expect(200, done);
+    });
 });
