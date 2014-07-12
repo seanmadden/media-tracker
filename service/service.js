@@ -110,11 +110,19 @@ router.route("/:list")
             }
 
             list.remove();
-            res.json("ListItem Deleted!");
+            res.json("List Deleted!");
         })
     });
 
-router.route("/:list/:listItemId")
+
+router.param('listItem', function(req, res, next, title) {
+    ListItem.findOne({ title_lower: title.toLowerCase(), parentList: req.List._id }).exec(function(err, listItem) {
+        req.ListItem = listItem;
+        next();
+    });
+});
+
+router.route("/:list/:listItem")
     .put(function(req, res) {
         ListItem.findById(req.params.listItemId, function(err, movie) {
             if (err) {
@@ -140,15 +148,17 @@ router.route("/:list/:listItemId")
         });
     })
     .delete(function(req, res) {
-        ListItem.findById(req.params.movieId, function(err, movie) {
-            if (err) {
-                res.send(err);
-                return;
-            }
-
-            movie.remove();
-            res.json("ListItem Deleted!");
-        })
+//        ListItem.findById(req.params.listItem, function(err, listItem) {
+//            if (err) {
+//                res.send(err);
+//                return;
+//            }
+//
+//            listItem.remove();
+//            res.json("ListItem Deleted!");
+//        })
+        req.ListItem.remove();
+        res.json("ListItem Deleted!");
     });
 
 router.get("/", function(req, res) {
