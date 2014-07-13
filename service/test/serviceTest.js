@@ -19,10 +19,25 @@ describe('GET lists', function() {
             .expect('Content-Type', /json/)
             .expect(function(res) {
                 if (res.body.message !== 'List Created') {
-                    return "List not created successfully";
+                    return "Failure.\nExpected: 'List Created'\nGot: " + res.body.message;
                 }
             })
             .expect(200, done);
+    });
+
+    it('responds with "List already exists"', function(done) {
+        request(app)
+            .post('/api/lists')
+            .send({title: 'testList'})
+            .set('Accept', 'application/json')
+            .expect('Content-Type', /json/)
+            .expect(function(res) {
+                if (res.body.status !== "SUCCESS" && res.body.message !== 'List Already Exists!') {
+                    return "Failure.\nExpected: 'List Already Exists!'\nGot: " + res.body.message;
+                }
+            })
+            .expect(200, done);
+
     });
 
     it('returns the contents of a list', function(done) {
@@ -50,6 +65,19 @@ describe('GET lists', function() {
             .expect(200, done);
     });
 
+    it('deletes testItem from the testList', function(done) {
+        request(app)
+            .delete('/api/testList/testItem')
+            .expect('Content-Type', /json/)
+            .expect(function(res) {
+                if (res.body !== 'ListItem Deleted!') {
+                    return "Response Incorrect.\n Expected: 'ListItem Deleted!'\n Got: " + res.body;
+                }
+            })
+            .expect(200, done);
+
+    });
+
     it('deletes testItem2 from the testList', function(done) {
         request(app)
             .delete('/api/testList/testItem2')
@@ -63,7 +91,7 @@ describe('GET lists', function() {
 
     });
 
-    it('deletes a list', function(done) {
+    it('deletes the test list', function(done) {
         request(app)
             .delete('/api/testList')
             .expect('Content-Type', /json/)

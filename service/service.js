@@ -49,23 +49,32 @@ router.route("/lists")
         )
     })
     .post(function(req, res) {
-        var list = new List();
+        List.findOne({title_lower: req.body.title.toLowerCase()}, function(err, list) {
+            //check to see if the list exists
+            if (list != null) {
+                res.json({status: 'FAILED',
+                    message: "List Already Exists!"});
+            } else {
+                //create the list
+                var list = new List();
+                list.title= req.body.title;
+                list.title_lower = req.body.title.toLowerCase();
 
-        list.title= req.body.title;
-        list.title_lower = req.body.title.toLowerCase();
+                list.save(function(err) {
+                    if (err) {
+                        res.send(err);
+                        return;
+                    }
 
-        list.save(function(err) {
-            if (err) {
-                res.send(err);
-                return;
+                    res.json(
+                        {
+                            status: "SUCCESS",
+                            message: 'List Created',
+                            list: list
+                        }
+                    )
+                });
             }
-
-            res.json(
-                {
-                    message: 'List Created',
-                    list: list
-                }
-            )
         });
     });
 
