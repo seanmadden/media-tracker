@@ -28,7 +28,7 @@ router.use(function(req, res, next) {
 });
 
 router.param('list', function (req, res, next, title) {
-    List.findOne({ title_lower: title.toLowerCase() }).exec(function (err, list) {
+    List.findOne({ title_lower: title.toLowerCase() }, function (err, list) {
         req.List = list;
         if (list == null) {
             res.json({
@@ -45,12 +45,8 @@ router.param('list', function (req, res, next, title) {
 //Match the routes from most specific to least specific
 router.route("/lists")
     .get(function(req, res) {
-        List.find()
-            .exec(function (err, Lists) {
-                if (err) {
-                    res.send(err);
-                    return;
-                }
+        List.find(function (err, Lists) {
+                if (err) return handleError(err);
 
                 res.json(Lists);
             }
@@ -69,10 +65,7 @@ router.route("/lists")
                 list.title_lower = req.body.title.toLowerCase();
 
                 list.save(function(err) {
-                    if (err) {
-                        res.send(err);
-                        return;
-                    }
+                    if (err) return handleError(err);
 
                     res.json(
                         {
@@ -91,10 +84,7 @@ router.route("/:list")
         ListItem.find({ parentList: req.List._id })
             .sort('title')
             .exec(function(err, ListItems) {
-                if (err) {
-                    res.send(err);
-                    return;
-                }
+                if (err) return handleError(err);
 
                 res.json(ListItems);
             });
@@ -106,10 +96,7 @@ router.route("/:list")
         listItem.title_lower = req.body.title.toLowerCase();
 
         listItem.save(function(err) {
-            if (err) {
-                res.send(err);
-                return;
-            }
+            if (err) return handleError(err);
 
             res.json(
                 {
@@ -121,8 +108,14 @@ router.route("/:list")
     })
     .delete(function(req, res) {
         //TODO: add error handling
-        List.remove({_id: req.List._id});
-        res.json("List Deleted!");
+        req.List.remove(function(err) {
+            if (err) return handleError(err);
+        });
+        res.json(
+            {
+                status: "SUCCESS",
+                message: "List Deleted!"
+            });
     });
 
 
@@ -136,10 +129,8 @@ router.param('listItem', function(req, res, next, title) {
 router.route("/:list/:listItem")
     .put(function(req, res) {
         ListItem.findById(req.params.listItemId, function(err, movie) {
-            if (err) {
-                res.send(err);
-                return;
-            }
+            if (err) return handleError(err);
+
 
             if (req.body.title !== undefined)
                 movie.title = req.body.title;
@@ -149,27 +140,21 @@ router.route("/:list/:listItem")
                 movie.watchedDate = new Date();
 
             movie.save(function(err) {
-                if (err) {
-                    res.send(err);
-                    return;
-                }
+                if (err) return handleError(err);
 
                 res.json("ListItem Updated");
             });
         });
     })
     .delete(function(req, res) {
-//        ListItem.findById(req.params.listItem, function(err, listItem) {
-//            if (err) {
-//                res.send(err);
-//                return;
-//            }
-//
-//            listItem.remove();
-//            res.json("ListItem Deleted!");
-//        })
-        req.ListItem.remove();
-        res.json("ListItem Deleted!");
+        ListItem.remove({_id: req.ListItem._id}, function(err) {
+            if (err) return handleError(err);
+        });
+        res.json(
+            {
+                status: "SUCCESS",
+                message: "ListItem Deleted!"
+            });
     });
 
 router.get("/", function(req, res) {
@@ -182,5 +167,10 @@ app.use("/api", router);
 app.listen(config.port, function() {
     console.log("Service listening on port", config.port);
 });
+
+function handleError(err) {
+    //TODO: logging
+    res.send(err);
+}
 
 module.exports = app;

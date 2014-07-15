@@ -12,7 +12,11 @@ var ListSchema = new Schema({
 });
 
 ListSchema.pre('remove', function(next) {
-    ListItem.remove({ parent_id: this._id }).exec();
+    ListItem.remove({ parentList: this._id }, function(err) {
+        if (err) {
+            console.log(err);
+        }
+    });
     next();
 });
 

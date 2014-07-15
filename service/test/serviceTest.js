@@ -2,7 +2,14 @@ var request = require('supertest'),
     app = require('./../service'),
     mocha = require('mocha');
 
+function checkMessage(expected, actual) {
+    if (expected !== actual)
+        return "Failure.\nExpected: '" + expected + "'\nGot: " + actual;
+
+    return false;
+}
 describe('GET lists', function() {
+
     it('responds with all lists', function(done) {
         request(app)
             .get('/api/lists')
@@ -18,9 +25,7 @@ describe('GET lists', function() {
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(function(res) {
-                if (res.body.message !== 'List Created') {
-                    return "Failure.\nExpected: 'List Created'\nGot: " + res.body.message;
-                }
+                return checkMessage('List Created', res.body.message) == true
             })
             .expect(200, done);
     });
@@ -32,9 +37,7 @@ describe('GET lists', function() {
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
             .expect(function(res) {
-                if (res.body.status !== "SUCCESS" && res.body.message !== 'List Already Exists!') {
-                    return "Failure.\nExpected: 'List Already Exists!'\nGot: " + res.body.message;
-                }
+                return checkMessage('List Already Exists!', res.body.message)
             })
             .expect(200, done);
 
@@ -70,9 +73,7 @@ describe('GET lists', function() {
             .delete('/api/testList/testItem2')
             .expect('Content-Type', /json/)
             .expect(function(res) {
-                if (res.body !== 'ListItem Deleted!') {
-                    return "Response Incorrect.\n Expected: 'ListItem Deleted!'\n Got: " + res.body;
-                }
+                return checkMessage('ListItem Deleted!', res.body.message)
             })
             .expect(200, done);
 
@@ -81,6 +82,9 @@ describe('GET lists', function() {
     it('deletes the test list', function(done) {
         request(app)
             .delete('/api/testList')
+            .expect(function(res) {
+                return checkMessage('List Deleted!', res.body.message)
+            })
             .expect('Content-Type', /json/)
             .expect(200, done);
     });
@@ -90,9 +94,7 @@ describe('GET lists', function() {
             .get('/api/testList')
             .expect('Content-Type', /json/)
             .expect(function(res) {
-                if (res.body.message === 'List not found') {
-                    return 'Response Incorrect.\nExpected: List not found\nReceived: ' + res.body.message;
-                }
+                return checkMessage('List not found', res.body.message)
             })
             .expect(200, done);
     });
