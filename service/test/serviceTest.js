@@ -43,13 +43,6 @@ describe('GET lists', function() {
 
     });
 
-    it('returns the contents of a list', function(done) {
-        request(app)
-            .get('/api/testList')
-            .expect('Content-Type', /json/)
-            .expect(200, done);
-    });
-
     it('adds an item to our list', function(done) {
         request(app)
             .post('/api/testList')
@@ -65,6 +58,16 @@ describe('GET lists', function() {
             .send({title: 'testItem2'})
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
+            .expect(200, done);
+    });
+
+    it('returns the contents of a list', function(done) {
+        request(app)
+            .get('/api/testList')
+            .expect('Content-Type', /json/)
+            .expect(function(res) {
+                checkMessage(2, res.body.count);
+            })
             .expect(200, done);
     });
 

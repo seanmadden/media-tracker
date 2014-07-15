@@ -86,7 +86,11 @@ router.route("/:list")
             .exec(function(err, ListItems) {
                 if (err) return handleError(err);
 
-                res.json(ListItems);
+                res.json({
+                    status: 'SUCCESS',
+                    listItems: ListItems,
+                    count: ListItems.length
+                });
             });
     })
     .post(function(req, res) {
