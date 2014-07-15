@@ -65,19 +65,6 @@ describe('GET lists', function() {
             .expect(200, done);
     });
 
-    it('deletes testItem from the testList', function(done) {
-        request(app)
-            .delete('/api/testList/testItem')
-            .expect('Content-Type', /json/)
-            .expect(function(res) {
-                if (res.body !== 'ListItem Deleted!') {
-                    return "Response Incorrect.\n Expected: 'ListItem Deleted!'\n Got: " + res.body;
-                }
-            })
-            .expect(200, done);
-
-    });
-
     it('deletes testItem2 from the testList', function(done) {
         request(app)
             .delete('/api/testList/testItem2')
@@ -95,6 +82,18 @@ describe('GET lists', function() {
         request(app)
             .delete('/api/testList')
             .expect('Content-Type', /json/)
+            .expect(200, done);
+    });
+
+    it('responds with no list items', function(done) {
+        request(app)
+            .get('/api/testList')
+            .expect('Content-Type', /json/)
+            .expect(function(res) {
+                if (res.body.message === 'List not found') {
+                    return 'Response Incorrect.\nExpected: List not found\nReceived: ' + res.body.message;
+                }
+            })
             .expect(200, done);
     });
 });

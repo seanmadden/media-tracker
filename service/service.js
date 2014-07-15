@@ -27,9 +27,17 @@ router.use(function(req, res, next) {
     next(); //allow the routing to continue
 });
 
-router.param('list', function(req, res, next, title) {
-    List.findOne({ title_lower: title.toLowerCase() }).exec(function(err, list) {
+router.param('list', function (req, res, next, title) {
+    List.findOne({ title_lower: title.toLowerCase() }).exec(function (err, list) {
         req.List = list;
+        if (list == null) {
+            res.json({
+                    status: 'FAILED',
+                    message: 'List not found'
+                }
+            );
+            return;
+        }
         next();
     });
 });
@@ -112,15 +120,9 @@ router.route("/:list")
         });
     })
     .delete(function(req, res) {
-        List.findById(req.List._id, function(err, list) {
-            if (err) {
-                res.send(err);
-                return;
-            }
-
-            list.remove();
-            res.json("List Deleted!");
-        })
+        //TODO: add error handling
+        List.remove({_id: req.List._id});
+        res.json("List Deleted!");
     });
 
 
