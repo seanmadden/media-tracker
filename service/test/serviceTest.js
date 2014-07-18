@@ -14,6 +14,9 @@ describe('GET lists', function() {
         request(app)
             .get('/api/lists')
             .set('Accept', 'application/json')
+            .expect(function(res) {
+                checkMessage('SUCCESS', res.body.status)
+            })
             .expect('Content-Type', /json/)
             .expect(200, done);
     });

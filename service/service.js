@@ -48,7 +48,11 @@ router.route("/lists")
         List.find(function (err, Lists) {
                 if (err) return handleError(err);
 
-                res.json(Lists);
+                res.json({
+                    status: "SUCCESS",
+                    lists: Lists,
+                    count: Lists.length
+                });
             }
         )
     })
