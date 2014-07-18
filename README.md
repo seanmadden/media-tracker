@@ -1,10 +1,23 @@
-media-tracker
+media-tracker Documentation
 =============
-The goal of this is to track movies that I want to see and movies I have seen. At some point I might expand it to track more things, but for now it's simply media.
+Last Updated: 7/16/14  
+Currently, this project is broken into two different parts. The website and the Service. My primary focus has shifted to the service. It is intended to be fast and robust webservice for managing lists.
 
-It will have a REST interface for interacting with the model, and maybe at some point I'll write an android app. Before that happens, I'll make sure the site also looks good on mobile devices.
+## Model
+The current list model is as follows:
 
-Finally, I'd like to add imdb or some other movie DB interaction to get artwork/synopsis/etc.
+| Field | Type | Required | Notes |
+|-------|------|----------|-------|
+|title | String |  Y     |       |
+|title_lower| String | Y  | Added automatically when using restful endpoint |
+|createDate | Date | Y    | Added automatically when using restful endpoint |
 
 
-UPDATE: the project has already changed scope. It is now configured to track lists of almost anything. See wiki for a roadmap.
+
+
+All API calls are restful, support GET, PUT, POST and DELETE operations. All current API calls live behind the /api endpoint.
+
+
+
+
+GET /api/lists - Returns a JSON array of all lists
