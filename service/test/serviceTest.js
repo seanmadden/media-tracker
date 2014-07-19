@@ -1,6 +1,5 @@
 var request = require('supertest'),
-    app = require('./../service'),
-    mocha = require('mocha');
+    app = require('./../service');
 
 function checkMessage(expected, actual) {
     if (expected !== actual)
