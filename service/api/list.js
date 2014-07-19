@@ -55,6 +55,12 @@ router.route("/lists")
             } else {
                 //create the list
                 var list = new List();
+                if (list.title === null) {
+                    res.json({
+                        status: 'FAILED',
+                        message: 'title is a required field'
+                    });
+                }
                 list.title= req.body.title;
                 list.title_lower = req.body.title.toLowerCase();
 
