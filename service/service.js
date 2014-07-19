@@ -139,7 +139,6 @@ router.route("/:list/:listItem")
         ListItem.findById(req.params.listItemId, function(err, movie) {
             if (err) return handleError(err);
 
-
             if (req.body.title !== undefined)
                 movie.title = req.body.title;
             if (req.body.watched !== undefined)

@@ -1,0 +1,46 @@
+/**
+ * Created by Sean on 7/19/2014.
+ * Inspired by http://devsmash.com/blog/password-authentication-with-mongoose-and-bcrypt
+ */
+
+var bcrypt = require('bcrypt');
+var SALT_WORK_FACTOR = 10;
+
+var UserSchema = new Schema({
+    email: { type: String, required: true, index: { unique: true }},
+    password: { type: String, required: true }
+});
+
+//Make sure to salt and hash the password before saving it to the db
+UserSchema.pre('save', function(next) {
+    var user = this;
+
+    if (!user.isModified('password'))
+        return next();
+
+    bcrypt.genSalt(SALT_WORK_FACTOR, function(err, salt) {
+        if (err)
+            return next(err);
+
+        bcrypt.hash(user.password, salt, function(err, hash) {
+            if (err)
+                return next(err);
+
+            user.password = hash;
+            next();
+        });
+
+    });
+
+});
+
+UserSchema.methods.comparePassword = function(password, callback) {
+    bcrypt.compare(password, this.password, function(err, isMatch) {
+        if (err)
+            return callback(err);
+
+        callback(null, isMatch);
+    });
+};
+
+module.exports = mongoose.model('User', UserSchema);
