@@ -3,7 +3,9 @@
  * Inspired by http://devsmash.com/blog/password-authentication-with-mongoose-and-bcrypt
  */
 
-var bcrypt = require('bcrypt');
+var bcrypt = require('bcryptjs');
+var mongoose = require('mongoose'),
+    Schema = mongoose.Schema;
 var SALT_WORK_FACTOR = 10;
 
 var UserSchema = new Schema({
