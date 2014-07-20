@@ -6,7 +6,7 @@ var express = require('express'),
     router = express.Router(),
     List = require('../models/list'),
     ListItem = require('../models/listItem'),
-    handleError = require('../util').handleError;
+    utils = require('../util');
 
 //Middleware params
 router.param('listItem', function(req, res, next, title) {
@@ -36,7 +36,7 @@ router.param('list', function (req, res, next, title) {
 router.route("/lists")
     .get(function(req, res) {
         List.find(function (err, Lists) {
-                if (err) return handleError(err, res);
+                if (err) return utils.handleError(err, res);
 
                 res.json({
                     status: "SUCCESS",
@@ -47,6 +47,14 @@ router.route("/lists")
         )
     })
     .post(function(req, res) {
+        var validation = utils.validateFields(req.body.title, ['title']);
+        if (!validation.isValid) {
+            res.json({
+                status: 'FAILED',
+                message: validation.message
+            });
+        }
+
         List.findOne({title_lower: req.body.title.toLowerCase()}, function(err, list) {
             //check to see if the list exists
             if (list != null) {
@@ -55,17 +63,11 @@ router.route("/lists")
             } else {
                 //create the list
                 var list = new List();
-                if (list.title === null) {
-                    res.json({
-                        status: 'FAILED',
-                        message: 'title is a required field'
-                    });
-                }
                 list.title= req.body.title;
                 list.title_lower = req.body.title.toLowerCase();
 
                 list.save(function(err) {
-                    if (err) return handleError(err, res);
+                    if (err) return utils.handleError(err, res);
 
                     res.json(
                         {
@@ -85,7 +87,7 @@ router.route("/:list")
         ListItem.find({ parentList: req.List._id })
             .sort('title')
             .exec(function(err, ListItems) {
-                if (err) return handleError(err, res);
+                if (err) return utils.handleError(err, res);
 
                 res.json({
                     status: 'SUCCESS',
@@ -95,13 +97,21 @@ router.route("/:list")
             });
     })
     .post(function(req, res) {
+        var validation = utils.validateFields(req.body, ['title']);
+        if (!validation.isValid) {
+            res.json({
+                status: 'FAILED',
+                message: validation.message
+            });
+        }
+
         var listItem = new ListItem();
         listItem.parentList = req.List._id;
         listItem.title = req.body.title;
         listItem.title_lower = req.body.title.toLowerCase();
 
         listItem.save(function(err) {
-            if (err) return handleError(err, res);
+            if (err) return utils.handleError(err, res);
 
             res.json(
                 {
@@ -114,7 +124,7 @@ router.route("/:list")
     .delete(function(req, res) {
         //TODO: add error handling
         req.List.remove(function(err) {
-            if (err) return handleError(err, res);
+            if (err) return utils.handleError(err, res);
         });
         res.json(
             {
@@ -125,18 +135,18 @@ router.route("/:list")
 
 router.route("/:list/:listItem")
     .put(function(req, res) {
-        ListItem.findById(req.params.listItemId, function(err, movie) {
-            if (err) return handleError(err, res);
+        ListItem.findById(req.params.listItemId, function(err, listItem) {
+            if (err) return utils.handleError(err, res);
 
             if (req.body.title !== undefined)
-                movie.title = req.body.title;
-            if (req.body.watched !== undefined)
-                movie.watched = req.body.watched;
-            if (movie.watched === true)
-                movie.watchedDate = new Date();
+                listItem.title = req.body.title;
+            if (req.body.complete !== undefined)
+                listItem.complete = req.body.complete;
+            if (listItem.complete === true)
+                listItem.completedDate = new Date();
 
-            movie.save(function(err) {
-                if (err) return handleError(err, res);
+            listItem.save(function(err) {
+                if (err) return utils.handleError(err, res);
 
                 res.json("ListItem Updated");
             });
@@ -144,7 +154,7 @@ router.route("/:list/:listItem")
     })
     .delete(function(req, res) {
         ListItem.remove({_id: req.ListItem._id}, function(err) {
-            if (err) return handleError(err, res);
+            if (err) return utils.handleError(err, res);
         });
         res.json(
             {
