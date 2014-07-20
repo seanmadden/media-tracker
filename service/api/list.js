@@ -36,7 +36,7 @@ router.param('list', function (req, res, next, title) {
 router.route("/lists")
     .get(function(req, res) {
         List.find(function (err, Lists) {
-                if (err) return handleError(err);
+                if (err) return handleError(err, res);
 
                 res.json({
                     status: "SUCCESS",
@@ -65,7 +65,7 @@ router.route("/lists")
                 list.title_lower = req.body.title.toLowerCase();
 
                 list.save(function(err) {
-                    if (err) return handleError(err);
+                    if (err) return handleError(err, res);
 
                     res.json(
                         {
@@ -85,7 +85,7 @@ router.route("/:list")
         ListItem.find({ parentList: req.List._id })
             .sort('title')
             .exec(function(err, ListItems) {
-                if (err) return handleError(err);
+                if (err) return handleError(err, res);
 
                 res.json({
                     status: 'SUCCESS',
@@ -101,7 +101,7 @@ router.route("/:list")
         listItem.title_lower = req.body.title.toLowerCase();
 
         listItem.save(function(err) {
-            if (err) return handleError(err);
+            if (err) return handleError(err, res);
 
             res.json(
                 {
@@ -114,7 +114,7 @@ router.route("/:list")
     .delete(function(req, res) {
         //TODO: add error handling
         req.List.remove(function(err) {
-            if (err) return handleError(err);
+            if (err) return handleError(err, res);
         });
         res.json(
             {
@@ -126,7 +126,7 @@ router.route("/:list")
 router.route("/:list/:listItem")
     .put(function(req, res) {
         ListItem.findById(req.params.listItemId, function(err, movie) {
-            if (err) return handleError(err);
+            if (err) return handleError(err, res);
 
             if (req.body.title !== undefined)
                 movie.title = req.body.title;
@@ -136,7 +136,7 @@ router.route("/:list/:listItem")
                 movie.watchedDate = new Date();
 
             movie.save(function(err) {
-                if (err) return handleError(err);
+                if (err) return handleError(err, res);
 
                 res.json("ListItem Updated");
             });
@@ -144,7 +144,7 @@ router.route("/:list/:listItem")
     })
     .delete(function(req, res) {
         ListItem.remove({_id: req.ListItem._id}, function(err) {
-            if (err) return handleError(err);
+            if (err) return handleError(err, res);
         });
         res.json(
             {

@@ -17,7 +17,7 @@ app.use(bodyParser());
 
 mongoose.connect('mongodb://localhost/' + config.databaseName, function(err) {
     if (err) {
-        console.error("Trouble connecting to database. Is mongodb running?")
+        console.error("Trouble connecting to database. Is mongodb running?");
     }
 });
 
