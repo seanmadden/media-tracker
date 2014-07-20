@@ -23,7 +23,7 @@ router.route('/user')
     .post(function(req, res) {
         var user = new User();
 
-        var validation = utils.validateFields(req.body, ['email', 'password']);
+        var validation = utils.requiredFieldValidator(req.body, ['email', 'password']);
         if (!validation.isValid) {
             res.json({
                 status: 'FAILED',

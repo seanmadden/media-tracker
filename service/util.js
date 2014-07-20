@@ -13,7 +13,7 @@ exports.handleError = function(err, res) {
  * @param fields - the fields to check for
  * @returns {object} - string or true. True indicates it is valid
  */
-exports.validateFields = function(obj, fields) {
+exports.requiredFieldValidator = function(obj, fields) {
     var returnObject = {
         isValid: true,
         message: null

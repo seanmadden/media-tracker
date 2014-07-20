@@ -47,7 +47,7 @@ router.route("/lists")
         )
     })
     .post(function(req, res) {
-        var validation = utils.validateFields(req.body.title, ['title']);
+        var validation = utils.requiredFieldValidator(req.body.title, ['title']);
         if (!validation.isValid) {
             res.json({
                 status: 'FAILED',
@@ -97,7 +97,7 @@ router.route("/:list")
             });
     })
     .post(function(req, res) {
-        var validation = utils.validateFields(req.body, ['title']);
+        var validation = utils.requiredFieldValidator(req.body, ['title']);
         if (!validation.isValid) {
             res.json({
                 status: 'FAILED',

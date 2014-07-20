@@ -39,6 +39,7 @@ app.use("/api", router);
 app.use("/api", userRouter);
 app.use("/api", listRouter);
 
+//TODO: SSL
 app.listen(config.port, function() {
     console.log("Service listening on port", config.port);
 });
