@@ -7,7 +7,6 @@ var express = require('express'),
     User = require('../models/user'),
     utils = require('../util');
 
-
 router.route('/user')
     .get(function(req, res) {
         User.find(function(err, users) {
@@ -31,19 +30,27 @@ router.route('/user')
             })
         }
 
-        user.email = req.body.email;
-        user.email_lower = req.body.email.toLowerCase();
-        user.password = req.body.password;
-        user.save(function(err, user) {
-            if (err)
-                return utils.handleError(err, res);
+        User.findOne({ email_lower: req.body.email.toLowerCase() }, function(err, user) {
+            if (user !== null) {
+                res.json({
+                    status: 'FAILED',
+                    message: 'User already exists'
+                });
+            } else {
+                user.email = req.body.email;
+                user.email_lower = req.body.email.toLowerCase();
+                user.password = req.body.password;
+                user.save(function(err, user) {
+                    if (err)
+                        return utils.handleError(err, res);
 
-            res.json({
-                status: 'SUCCESS',
-                message: user.email + ' has been successfully created'
-            })
+                    res.json({
+                        status: 'SUCCESS',
+                        message: user.email + ' has been successfully created'
+                    })
+                });
+            }
         });
-
     });
 
 
