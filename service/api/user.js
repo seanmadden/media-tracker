@@ -20,7 +20,6 @@ router.route('/user')
         });
     })
     .post(function(req, res) {
-        var user = new User();
 
         var validation = utils.requiredFieldValidator(req.body, ['email', 'password']);
         if (!validation.isValid) {
@@ -37,6 +36,7 @@ router.route('/user')
                     message: 'User already exists'
                 });
             } else {
+                var user = new User();
                 user.email = req.body.email;
                 user.email_lower = req.body.email.toLowerCase();
                 user.password = req.body.password;
