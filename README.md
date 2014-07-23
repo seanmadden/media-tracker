@@ -13,6 +13,7 @@ The current list model is as follows:
 |createDate | Date | Y    | Added automatically when using restful endpoint |
 
 The list item model looks like this:
+
 | Field | Type | Required | Notes |
 |-------|------|----------|-------|
 |title | String |  Y     |       |
