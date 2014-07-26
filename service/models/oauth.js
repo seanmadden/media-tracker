@@ -8,3 +8,8 @@ var Client = require('./oauth_client');
 
 
 module.exports.getClient = Client.getClient;
+module.exports.getAccesstoken = AccessToken.getAccessToken;
+module.exports.saveAccesstoken = AccessToken.saveAccessToken;
+module.exports.getRefreshToken = RefreshToken.getRefreshToken;
+module.exports.saveRefreshToken = RefreshToken.saveRefreshToken;
+
