@@ -46,5 +46,23 @@ UserSchema.methods.comparePassword = function(password, callback) {
     });
 };
 
+UserSchema.static('authenticate', function(email, password, callback) {
+    User.findOne({ email: email }, function(err, user) {
+        if (err)
+            return callback(err);
+        callback(null, bcrypt.compareSync(password, user.password) ? user : null);
+    });
+});
+
+UserSchema.static('getUser', function(email, password, callback) {
+    User.authenticate(email, password, function(err, user) {
+        if (err)
+            return callback(err);
+
+        callback(null, user.email);
+
+    });
+});
+
 var User = mongoose.model('User', UserSchema);
 module.exports = User;

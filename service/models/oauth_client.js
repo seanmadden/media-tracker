@@ -19,6 +19,13 @@ OAuthClientsSchema.static('getClient', function(clientId, clientSecret, callback
     OAuthClientsModel.findOne({ clientId: clientId, clientSecret: clientSecret }, callback);
 });
 
+OAuthClientsSchema.static('grantTypeAllowed', function(clientId, grantType, callback) {
+    if (grantType === 'password') {
+        //TODO: only authorize certain client IDs for password grant type
+        return callback(false, true)
+    }
+});
+
 mongoose.model('OAuthClients', OAuthClientsSchema);
 var OAuthClientsModel = mongoose.model('OAuthClients');
 module.exports = OAuthClientsModel;

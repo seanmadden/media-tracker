@@ -22,7 +22,7 @@ module.exports.saveRefreshToken = function(token, clientId, expires, userId, cal
         expires: expires
     });
 
-    refreshToken(callback);
+    refreshToken.save(callback);
 };
 
 module.exports.getRefreshToken = function(refreshToken, callback) {
