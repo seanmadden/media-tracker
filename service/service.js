@@ -13,13 +13,10 @@ var userRouter = require('./api/user');
 var listRouter = require('./api/list');
 var oauthserver = require('node-oauth2-server');
 var oauth = require('./models/oauth');
-var session = require('cookie-session');
 var app = express();
 var router = express.Router();
 
 app.use(bodyParser());
-app.use(session({ secret: 'this is a secret' })
-);
 
 mongoose.connect('mongodb://localhost/' + config.databaseName, function(err) {
     if (err) {
