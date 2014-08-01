@@ -13,10 +13,13 @@ var userRouter = require('./api/user');
 var listRouter = require('./api/list');
 var oauthserver = require('node-oauth2-server');
 var oauth = require('./models/oauth');
+var session = require('cookie-session');
 var app = express();
 var router = express.Router();
 
 app.use(bodyParser());
+app.use(session({ secret: 'this is a secret' })
+);
 
 mongoose.connect('mongodb://localhost/' + config.databaseName, function(err) {
     if (err) {
@@ -45,6 +48,10 @@ app.oauth = oauthserver({
 
 //Remember to route from most specific to least specific!
 app.use("/oauth/token", app.oauth.grant());
+app.use("/api", app.oauth.authorise(), function(req, res, next) {
+    next();
+});
+app.use(app.oauth.errorHandler());
 app.use("/api", router);
 app.use("/api", userRouter);
 app.use("/api", listRouter);
