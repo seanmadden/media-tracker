@@ -17,7 +17,7 @@ router.param('listItem', function(req, res, next, title) {
 });
 
 router.param('list', function (req, res, next, title) {
-    List.findOne({ title_lower: title.toLowerCase() }, function (err, list) {
+    List.findOne({ title_lower: title.toLowerCase(), creator: req.oauth.userId }, function (err, list) {
         req.List = list;
         if (list == null) {
             res.json({
@@ -35,7 +35,7 @@ router.param('list', function (req, res, next, title) {
 //Match the routes from most specific to least specific
 router.route("/lists")
     .get(function(req, res) {
-        List.find(function (err, Lists) {
+        List.find({ creator: req.oauth.bearerToken.userId }, function (err, Lists) {
                 if (err) return utils.handleError(err, res);
 
                 res.json({
@@ -47,29 +47,30 @@ router.route("/lists")
         )
     })
     .post(function(req, res) {
-        var validation = utils.requiredFieldValidator(req.body.title, ['title']);
+        var validation = utils.requiredFieldValidator(req.body, ['title']);
         if (!validation.isValid) {
-            res.json({
+            return res.json({
                 status: 'FAILED',
                 message: validation.message
             });
         }
 
-        List.findOne({title_lower: req.body.title.toLowerCase()}, function(err, list) {
+        List.findOne({title_lower: req.body.title.toLowerCase(), creator: req.oauth.bearerToken.userId }, function(err, list) {
             //check to see if the list exists
             if (list != null) {
-                res.json({status: 'FAILED',
+                return res.json({status: 'FAILED',
                     message: "List Already Exists!"});
             } else {
                 //create the list
                 var list = new List();
                 list.title= req.body.title;
                 list.title_lower = req.body.title.toLowerCase();
+                list.creator = req.oauth.bearerToken.userId;
 
                 list.save(function(err) {
                     if (err) return utils.handleError(err, res);
 
-                    res.json(
+                    return res.json(
                         {
                             status: "SUCCESS",
                             message: 'List Created',

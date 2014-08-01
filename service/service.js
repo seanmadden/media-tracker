@@ -24,6 +24,12 @@ mongoose.connect('mongodb://localhost/' + config.databaseName, function(err) {
     }
 });
 
+app.oauth = oauthserver({
+    model: oauth,
+    grants: ['password', 'refresh_token'],
+    debug: true
+});
+
 //set headers to allow CORS - this is run before any other routing
 router.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -37,17 +43,14 @@ router.get("/", function(req, res) {
     res.json({ message: 'ListItem service API' })
 });
 
-app.oauth = oauthserver({
-    model: oauth,
-    grants: ['password', 'refresh_token'],
-    debug: true
+app.use("/api", function(req, res, next) {
+    //interesting way to pass the oauth credentials so I can get the user
+    req.app.oauth.authorise()(req, res, next);
 });
+
 
 //Remember to route from most specific to least specific!
 app.use("/oauth/token", app.oauth.grant());
-app.use("/api", app.oauth.authorise(), function(req, res, next) {
-    next();
-});
 app.use(app.oauth.errorHandler());
 app.use("/api", router);
 app.use("/api", userRouter);

@@ -59,7 +59,7 @@ UserSchema.static('getUser', function(email, password, callback) {
         if (err)
             return callback(err);
 
-        callback(null, user.email);
+        callback(null, user._id);
 
     });
 });

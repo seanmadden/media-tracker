@@ -8,7 +8,7 @@ var mongoose = require('mongoose'),
 var ListSchema = new Schema({
     title: { type: String, required: true },
     title_lower: { type: String, required: true },
-    user: { type: String, required: true },
+    creator: { type: String, required: true },
     createDate: Date
 });
 
