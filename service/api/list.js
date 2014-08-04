@@ -10,14 +10,18 @@ var express = require('express'),
 
 //Middleware params
 router.param('listItem', function(req, res, next, title) {
-    ListItem.findOne({ title_lower: title.toLowerCase(), parentList: req.List._id }).exec(function(err, listItem) {
-        req.ListItem = listItem;
-        next();
-    });
+    ListItem.findOne({ title_lower: title.toLowerCase(),
+        parentList: req.List._id,
+        creator: req.oauth.bearerToken.userId })
+        .exec(function(err, listItem) {
+            req.ListItem = listItem;
+            next();
+        }
+    );
 });
 
 router.param('list', function (req, res, next, title) {
-    List.findOne({ title_lower: title.toLowerCase(), creator: req.oauth.userId }, function (err, list) {
+    List.findOne({ title_lower: title.toLowerCase(), creator: req.oauth.bearerToken.userId }, function (err, list) {
         req.List = list;
         if (list == null) {
             res.json({
@@ -85,7 +89,7 @@ router.route("/lists")
 
 router.route("/:list")
     .get(function(req, res) {
-        ListItem.find({ parentList: req.List._id })
+        ListItem.find({ parentList: req.List._id, creator:req.oauth.bearerToken.userId })
             .sort('title')
             .exec(function(err, ListItems) {
                 if (err) return utils.handleError(err, res);
@@ -110,6 +114,7 @@ router.route("/:list")
         listItem.parentList = req.List._id;
         listItem.title = req.body.title;
         listItem.title_lower = req.body.title.toLowerCase();
+        listItem.creator = req.oauth.bearerToken.userId;
 
         listItem.save(function(err) {
             if (err) return utils.handleError(err, res);
@@ -154,7 +159,7 @@ router.route("/:list/:listItem")
         });
     })
     .delete(function(req, res) {
-        ListItem.remove({_id: req.ListItem._id}, function(err) {
+        ListItem.remove({_id: req.ListItem._id, creator: req.oauth.bearerToken.userId }, function(err) {
             if (err) return utils.handleError(err, res);
         });
         res.json(

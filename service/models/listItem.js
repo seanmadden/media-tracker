@@ -11,6 +11,7 @@ var ListItemSchema = new Schema({
     complete : { type: Boolean, default: false},
     completedDate : Date,
     parentList : { type: String, required: true },
+    creator: { type: String, required: true },
     order : Number
 });
 
